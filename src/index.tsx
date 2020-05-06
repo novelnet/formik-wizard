@@ -58,7 +58,7 @@ function FormikWizardStep({
     async (sectionValues) => {
       setStatus(undefined)
 
-      let status
+      let status, goTo
 
       try {
         if (info.isLastStep) {
@@ -70,8 +70,12 @@ function FormikWizardStep({
           setValues(newValues)
         } else {
           status = step.onAction
-            ? await step.onAction(sectionValues, values)
+            ? await step.onAction(sectionValues, values, wizard)
             : undefined
+
+          if (Array.isArray(status)) {
+            [status, goTo] = status;
+          }
 
           setValues((values: any) => {
             return produce(values, (draft: any) => {
@@ -79,7 +83,11 @@ function FormikWizardStep({
             })
           })
 
-          setImmediate(wizard.next)
+          if (goTo) {
+            setImmediate(wizard.push, goTo)
+          } else {
+            setImmediate(wizard.next)
+          }
         }
       } catch (e) {
         status = e

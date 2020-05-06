@@ -20,7 +20,8 @@ export interface FormikWizardStepType {
   actionLabel?: string
   onAction?: (
     sectionValues: FormikWizardBaseValues,
-    formValues: FormikWizardBaseValues
+    formValues: FormikWizardBaseValues,
+    wizard: WizardContext
   ) => Promise<any>
   keepValuesOnPrevious?: boolean
 }
