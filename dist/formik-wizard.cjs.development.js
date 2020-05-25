@@ -71,13 +71,16 @@ function FormikWizardStep(_ref) {
   var info = React.useMemo(function () {
     return {
       canGoBack: steps[0] !== step.id,
-      currentStep: step.id,
-      isLastStep: steps[steps.length - 1] === step.id
+      currentStep: {
+        id: step.id,
+        progress: step.progress
+      },
+      isLastStep: step.isSubmitStep || steps[steps.length - 1] === step.id
     };
   }, [steps, step]);
   var handleSubmit = React.useCallback(function (sectionValues) {
     try {
-      var _temp5 = function _temp5() {
+      var _temp6 = function _temp6() {
         setStatus(_status);
       };
 
@@ -85,50 +88,74 @@ function FormikWizardStep(_ref) {
 
       var _status, goTo;
 
-      var _temp6 = _catch(function () {
+      var _temp7 = _catch(function () {
+        function _temp3() {
+          function _temp(_step$onAction) {
+            _status = _step$onAction;
+
+            if (Array.isArray(_status)) {
+
+              var _status2 = _status;
+              _status = _status2[0];
+              goTo = _status2[1];
+            }
+
+            setValues(newValues);
+
+            if (goTo) {
+              setImmediate(wizard.push, goTo);
+            } else {
+              setImmediate(wizard.next);
+            }
+          }
+
+          var _step$onAction2 = step.onAction;
+          return _step$onAction2 ? Promise.resolve(step.onAction(sectionValues, values, wizard)).then(_temp) : _temp(undefined); // if (info.isLastStep) {
+          //   const newValues = produce(values, (draft: any) => {
+          //     draft[info.currentStep.id] = sectionValues
+          //   })
+          //
+          //   status = await onSubmit(newValues)
+          //   setValues(newValues)
+          // } else {
+          //   status = step.onAction
+          //     ? await step.onAction(sectionValues, values, wizard)
+          //     : undefined
+          //
+          //   if (Array.isArray(status)) {
+          //     ;[status, goTo] = status
+          //   }
+          //
+          //   setValues((values: any) => {
+          //     return produce(values, (draft: any) => {
+          //       draft[info.currentStep.id] = sectionValues
+          //     })
+          //   })
+          //
+          //   if (goTo) {
+          //     setImmediate(wizard.push, goTo)
+          //   } else {
+          //     setImmediate(wizard.next)
+          //   }
+          // }
+        }
+
+        var newValues = produce(values, function (draft) {
+          draft[info.currentStep.id] = sectionValues;
+        });
+
         var _temp2 = function () {
           if (info.isLastStep) {
-            var newValues = produce(values, function (draft) {
-              draft[info.currentStep] = sectionValues;
-            });
-            return Promise.resolve(onSubmit(newValues)).then(function (_onSubmit) {
-              _status = _onSubmit;
-              setValues(newValues);
-            });
-          } else {
-            var _temp7 = function _temp7(_step$onAction) {
-              _status = _step$onAction;
-
-              if (Array.isArray(_status)) {
-                var _status2 = _status;
-                _status = _status2[0];
-                goTo = _status2[1];
-              }
-
-              setValues(function (values) {
-                return produce(values, function (draft) {
-                  draft[info.currentStep] = sectionValues;
-                });
-              });
-
-              if (goTo) {
-                setImmediate(wizard.push, goTo);
-              } else {
-                setImmediate(wizard.next);
-              }
-            };
-
-            var _step$onAction3 = step.onAction;
-            return _step$onAction3 ? Promise.resolve(step.onAction(sectionValues, values, wizard)).then(_temp7) : _temp7(undefined);
+            return Promise.resolve(onSubmit(newValues, step)).then(function () {});
           }
         }();
 
-        if (_temp2 && _temp2.then) return _temp2.then(function () {});
+        return _temp2 && _temp2.then ? _temp2.then(_temp3) : _temp3(_temp2);
       }, function (e) {
         _status = e;
       });
 
-      return Promise.resolve(_temp6 && _temp6.then ? _temp6.then(_temp5) : _temp5(_temp6));
+      return Promise.resolve(_temp7 && _temp7.then ? _temp7.then(_temp6) : _temp6(_temp7));
     } catch (e) {
       return Promise.reject(e);
     }

@@ -15,9 +15,11 @@ export interface FormikWizardStepType {
   id: string
   component: React.SFC<{}>
   validationSchema?: Schema<any>
-  validate?: (values: any) => void | object | Promise<FormikErrors<any>>,
+  validate?: (values: any) => void | object | Promise<FormikErrors<any>>
   initialValues?: FormikWizardBaseValues
+  progress?: number
   actionLabel?: string
+  isSubmitStep?: boolean
   onAction?: (
     sectionValues: FormikWizardBaseValues,
     formValues: FormikWizardBaseValues,
@@ -30,7 +32,7 @@ export interface FormikWizardWrapperProps<Values, Status = any>
   extends FormikWizardContextValue<Values, Status> {
   canGoBack: boolean
   goToPreviousStep: () => void
-  currentStep: string
+  currentStep: object
   actionLabel?: string
   isLastStep: boolean
   steps: string[]
@@ -42,7 +44,7 @@ export interface FormikWizardWrapperProps<Values, Status = any>
 export interface FormikWizardProps<Values, Status = any> {
   steps: FormikWizardStepType[]
   render: React.SFC<FormikWizardWrapperProps<Values, Status>>
-  onSubmit: (values: Values) => void | Promise<void>
+  onSubmit: (values: Values, step: object) => void | Promise<void>
   formikProps?: Partial<FormikProps<Values>>
   albusProps?: Partial<WizardProps>
   Form?: any

@@ -1,7 +1,12 @@
 import { Form as DefaultForm, Formik, FormikProps } from 'formik'
 import produce from 'immer'
 import React from 'react'
-import { Step as AlbusStep, Steps as AlbusSteps, Wizard as AlbusWizard, WizardContext } from 'react-albus'
+import {
+  Step as AlbusStep,
+  Steps as AlbusSteps,
+  Wizard as AlbusWizard,
+  WizardContext,
+} from 'react-albus'
 
 import {
   FormikWizardBaseValues,
@@ -49,8 +54,8 @@ function FormikWizardStep({
   const info = React.useMemo(() => {
     return {
       canGoBack: steps[0] !== step.id,
-      currentStep: step.id,
-      isLastStep: steps[steps.length - 1] === step.id,
+      currentStep: { id: step.id, progress: step.progress },
+      isLastStep: step.isSubmitStep || steps[steps.length - 1] === step.id,
     }
   }, [steps, step])
 
@@ -61,34 +66,58 @@ function FormikWizardStep({
       let status, goTo
 
       try {
+        const newValues = produce(values, (draft: any) => {
+          draft[info.currentStep.id] = sectionValues
+        })
+
         if (info.isLastStep) {
-          const newValues = produce(values, (draft: any) => {
-            draft[info.currentStep] = sectionValues
-          })
-
-          status = await onSubmit(newValues)
-          setValues(newValues)
-        } else {
-          status = step.onAction
-            ? await step.onAction(sectionValues, values, wizard)
-            : undefined
-
-          if (Array.isArray(status)) {
-            [status, goTo] = status;
-          }
-
-          setValues((values: any) => {
-            return produce(values, (draft: any) => {
-              draft[info.currentStep] = sectionValues
-            })
-          })
-
-          if (goTo) {
-            setImmediate(wizard.push, goTo)
-          } else {
-            setImmediate(wizard.next)
-          }
+          await onSubmit(newValues, step)
         }
+
+        status = step.onAction
+          ? await step.onAction(sectionValues, values, wizard)
+          : undefined
+
+        if (Array.isArray(status)) {
+          ;[status, goTo] = status
+        }
+
+        setValues(newValues)
+
+        if (goTo) {
+          setImmediate(wizard.push, goTo)
+        } else {
+          setImmediate(wizard.next)
+        }
+
+        // if (info.isLastStep) {
+        //   const newValues = produce(values, (draft: any) => {
+        //     draft[info.currentStep.id] = sectionValues
+        //   })
+        //
+        //   status = await onSubmit(newValues)
+        //   setValues(newValues)
+        // } else {
+        //   status = step.onAction
+        //     ? await step.onAction(sectionValues, values, wizard)
+        //     : undefined
+        //
+        //   if (Array.isArray(status)) {
+        //     ;[status, goTo] = status
+        //   }
+        //
+        //   setValues((values: any) => {
+        //     return produce(values, (draft: any) => {
+        //       draft[info.currentStep.id] = sectionValues
+        //     })
+        //   })
+        //
+        //   if (goTo) {
+        //     setImmediate(wizard.push, goTo)
+        //   } else {
+        //     setImmediate(wizard.next)
+        //   }
+        // }
       } catch (e) {
         status = e
       }
