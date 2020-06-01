@@ -54,7 +54,11 @@ function FormikWizardStep({
   const info = React.useMemo(() => {
     return {
       canGoBack: steps[0] !== step.id,
-      currentStep: { id: step.id, progress: step.progress },
+      currentStep: {
+        id: step.id,
+        progress: step.progress,
+        isSubmitStep: step.isSubmitStep,
+      },
       isLastStep: step.isSubmitStep || steps[steps.length - 1] === step.id,
     }
   }, [steps, step])
