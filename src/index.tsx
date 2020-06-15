@@ -8,6 +8,9 @@ import {
   WizardContext,
 } from 'react-albus'
 
+import { useLocation } from '@reach/router'
+import qs from 'qs'
+
 import {
   FormikWizardBaseValues,
   FormikWizardContextValue,
@@ -16,8 +19,17 @@ import {
   FormikWizardWrapperProps,
 } from './types'
 
-function getInitialValues(steps: FormikWizardStepType[]) {
+function getInitialValues(steps: FormikWizardStepType[], query: string) {
+  // ?livingSpace=3&landArea=6
+  const parsedURI = qs.parse(query, { ignoreQueryPrefix: true })
+
   return steps.reduce<FormikWizardBaseValues>((curr, next) => {
+    Object.keys(parsedURI).forEach((key) => {
+      if (next.initialValues && key in next.initialValues) {
+        next.initialValues[key] = parsedURI[key]
+      }
+    })
+
     curr[next.id] = next.initialValues
     return curr
   }, {})
@@ -191,11 +203,14 @@ export function FormikWizard<T>({
   Form,
   render,
 }: FormikWizardProps<T>) {
+  const { search: query } = useLocation()
   const [status, setStatus] = React.useState(undefined)
-  const [values, setValues] = React.useState(() => getInitialValues(steps))
+  const [values, setValues] = React.useState(() =>
+    getInitialValues(steps, query)
+  )
 
   React.useEffect(() => {
-    setValues(getInitialValues(steps))
+    setValues(getInitialValues(steps, query))
     setStatus(undefined)
   }, [steps])
 

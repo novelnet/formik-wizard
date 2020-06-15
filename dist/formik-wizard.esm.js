@@ -2,6 +2,8 @@ import { Formik, Form } from 'formik';
 import produce from 'immer';
 import React from 'react';
 import { Wizard, Steps, Step } from 'react-albus';
+import { useLocation } from '@reach/router';
+import qs from 'qs';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -40,8 +42,17 @@ function _catch(body, recover) {
 	return result;
 }
 
-function getInitialValues(steps) {
+function getInitialValues(steps, query) {
+  // ?livingSpace=3&landArea=6
+  var parsedURI = qs.parse(query, {
+    ignoreQueryPrefix: true
+  });
   return steps.reduce(function (curr, next) {
+    Object.keys(parsedURI).forEach(function (key) {
+      if (next.initialValues && key in next.initialValues) {
+        next.initialValues[key] = parsedURI[key];
+      }
+    });
     curr[next.id] = next.initialValues;
     return curr;
   }, {});
@@ -200,18 +211,21 @@ function FormikWizard(_ref2) {
       Form = _ref2.Form,
       _render = _ref2.render;
 
+  var _useLocation = useLocation(),
+      query = _useLocation.search;
+
   var _React$useState = React.useState(undefined),
       status = _React$useState[0],
       setStatus = _React$useState[1];
 
   var _React$useState2 = React.useState(function () {
-    return getInitialValues(steps);
+    return getInitialValues(steps, query);
   }),
       values = _React$useState2[0],
       setValues = _React$useState2[1];
 
   React.useEffect(function () {
-    setValues(getInitialValues(steps));
+    setValues(getInitialValues(steps, query));
     setStatus(undefined);
   }, [steps]);
   var stepIds = React.useMemo(function () {
