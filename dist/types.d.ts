@@ -18,6 +18,7 @@ export interface FormikWizardStepType {
     progress?: number;
     actionLabel?: string;
     isSubmitStep?: boolean;
+    canGoBack?: boolean;
     onAction?: (sectionValues: FormikWizardBaseValues, formValues: FormikWizardBaseValues, wizard: WizardContext) => Promise<any>;
     keepValuesOnPrevious?: boolean;
 }

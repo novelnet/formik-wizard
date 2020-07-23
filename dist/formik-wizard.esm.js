@@ -81,7 +81,8 @@ function FormikWizardStep(_ref) {
       currentStep: {
         id: step.id,
         progress: step.progress,
-        isSubmitStep: step.isSubmitStep
+        isSubmitStep: step.isSubmitStep,
+        canGoBack: step.canGoBack
       },
       isLastStep: step.isSubmitStep || steps[steps.length - 1] === step.id
     };
