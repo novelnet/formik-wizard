@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { FormikProps, FormikErrors } from 'formik';
 import { WizardContext, WizardProps } from 'react-albus';
 import { Schema } from 'yup';
