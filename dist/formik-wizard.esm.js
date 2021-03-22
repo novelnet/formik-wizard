@@ -2,6 +2,7 @@ import { Formik, Form } from 'formik';
 import produce from 'immer';
 import React from 'react';
 import { Wizard, Steps, Step } from 'react-albus';
+import 'setimmediate';
 import { useLocation } from '@reach/router';
 import qs from 'qs';
 
@@ -87,9 +88,9 @@ function FormikWizardStep(_ref) {
   }, [steps, step]);
   var handleSubmit = React.useCallback(function (sectionValues) {
     try {
-      function _temp6() {
+      var _temp6 = function _temp6() {
         setStatus(_status);
-      }
+      };
 
       setStatus(undefined);
 

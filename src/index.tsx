@@ -8,6 +8,7 @@ import {
   WizardContext,
 } from 'react-albus'
 
+import 'setimmediate'
 import { useLocation } from '@reach/router'
 import qs from 'qs'
 

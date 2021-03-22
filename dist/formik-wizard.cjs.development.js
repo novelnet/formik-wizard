@@ -6,6 +6,7 @@ var formik = require('formik');
 var produce = _interopDefault(require('immer'));
 var React = _interopDefault(require('react'));
 var reactAlbus = require('react-albus');
+require('setimmediate');
 var router = require('@reach/router');
 var qs = _interopDefault(require('qs'));
 
@@ -91,9 +92,9 @@ function FormikWizardStep(_ref) {
   }, [steps, step]);
   var handleSubmit = React.useCallback(function (sectionValues) {
     try {
-      function _temp6() {
+      var _temp6 = function _temp6() {
         setStatus(_status);
-      }
+      };
 
       setStatus(undefined);
 
