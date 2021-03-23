@@ -6,7 +6,6 @@ var formik = require('formik');
 var produce = _interopDefault(require('immer'));
 var React = _interopDefault(require('react'));
 var reactAlbus = require('react-albus');
-require('setimmediate');
 var router = require('@reach/router');
 var qs = _interopDefault(require('qs'));
 
@@ -115,9 +114,10 @@ function FormikWizardStep(_ref) {
             setValues(newValues);
 
             if (goTo) {
-              setImmediate(wizard.push, goTo);
+              // setImmediate(wizard.push, goTo)
+              wizard.push(goTo);
             } else {
-              setImmediate(wizard.next);
+              wizard.next(); // setImmediate(wizard.next)
             }
           }
 

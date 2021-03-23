@@ -8,7 +8,6 @@ import {
   WizardContext,
 } from 'react-albus'
 
-import 'setimmediate'
 import { useLocation } from '@reach/router'
 import qs from 'qs'
 
@@ -103,9 +102,11 @@ function FormikWizardStep({
         setValues(newValues)
 
         if (goTo) {
-          setImmediate(wizard.push, goTo)
+          // setImmediate(wizard.push, goTo)
+          wizard.push(goTo)
         } else {
-          setImmediate(wizard.next)
+          wizard.next()
+          // setImmediate(wizard.next)
         }
 
         // if (info.isLastStep) {

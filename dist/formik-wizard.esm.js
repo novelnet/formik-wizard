@@ -2,7 +2,6 @@ import { Formik, Form } from 'formik';
 import produce from 'immer';
 import React from 'react';
 import { Wizard, Steps, Step } from 'react-albus';
-import 'setimmediate';
 import { useLocation } from '@reach/router';
 import qs from 'qs';
 
@@ -111,9 +110,10 @@ function FormikWizardStep(_ref) {
             setValues(newValues);
 
             if (goTo) {
-              setImmediate(wizard.push, goTo);
+              // setImmediate(wizard.push, goTo)
+              wizard.push(goTo);
             } else {
-              setImmediate(wizard.next);
+              wizard.next(); // setImmediate(wizard.next)
             }
           }
 
