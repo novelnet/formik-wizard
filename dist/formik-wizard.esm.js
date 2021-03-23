@@ -88,9 +88,9 @@ function FormikWizardStep(_ref) {
   }, [steps, step]);
   var handleSubmit = React.useCallback(function (sectionValues) {
     try {
-      var _temp6 = function _temp6() {
+      function _temp6() {
         setStatus(_status);
-      };
+      }
 
       setStatus(undefined);
 
